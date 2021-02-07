@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="content-language" content="ja">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>falsycat</title>
+
+  <meta name="author" content="falsycat">
+  <meta name="description" content="falsycat's portfolio">
+  <link rel="icon" href="./img/icon/falsycat.webp">
+
+  <meta name="twitter:site" content="@falsycat">
+  <meta name="twitter:card" content="summary">
+  <meta property="og:url" content="https://falsy.cat/">
+  <meta property="og:title" content="falsycat">
+  <meta property="og:description" content="falsycat's portfolio">
+  <meta property="og:image" content="./img/icon/falsycat.webp">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Ubuntu&family=Noto+Serif+JP&display=block" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/destyle.css@2.0.2/destyle.css">
+  <style>
+:root {
+  --color1: #DDD;
+  --color2: #222831;
+  --color3: #30475E;
+  --color4: #f05454;
+
+  --color1-disabled: #555;
+}
+
+html {
+  font-size: 12pt;
+  background-color: var(--color2);
+  font-family: 'Ubuntu', sans-serif;
+}
+body {
+  position: relative;
+  min-height: 100vh;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Black Ops One', sans-serif;
+  cursor: default;
+}
+
+#background, #frame {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+}
+#background svg {
+  position: absolute;
+  stroke: var(--color3);
+  fill: var(--color3);
+  stroke-width: 1px;
+}
+#background .text {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 3vw;
+  letter-spacing: 1em;
+  line-height: 2em;
+  text-align: right;
+  white-space: pre;
+}
+#background:after {
+  display: block;
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: relative;
+  z-index: 0;
+
+  background-image: url("./img/tex/clean-gray-paper.webp");
+  background-size: 512px 512px;
+}
+
+#frame {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none;
+}
+#frame svg {
+  position: absolute;
+  stroke: none;
+  fill: #000;
+}
+
+#foreground {
+  max-width: 60rem;
+  min-width: 16rem;
+
+  padding: 1rem 0;
+
+  margin: 0 auto;
+  text-align: center;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  overflow-x: hidden;
+  color: var(--color1);
+}
+
+#header {
+  margin: calc(50vh - 6rem) 0 2rem 0;
+}
+#header h1 {
+  font-size: 8rem;
+  line-height: 1em;
+  color: var(--color4);
+}
+#header .role {
+  font-size: 1rem;
+  letter-spacing: 2rem;
+  text-indent: 1em;
+  line-height: 1em;
+}
+#header .icons {
+  margin: 1rem 0;
+  width: 100%;
+}
+#header .icons ul {
+  max-width: 20rem;
+  margin: 0 auto;
+
+  display: flex;
+  justify-content: space-around;
+}
+#header .icons ul li {
+  margin: 0 .2rem;
+  background-color: var(--color2);
+  border-radius: 50%;
+  border: .5em solid var(--color2);
+}
+#header .icons img.icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+#works p a {
+  text-decoration: underline;
+  color: var(--color4);
+}
+#works h2 {
+  font-size: 2rem;
+}
+#works>ul {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+#works>ul>li {
+  margin: .5rem;
+}
+#works>ul>li img.thumb {
+  width: 16rem;
+  height: 9rem;
+  border: solid 1px black;
+}
+
+#footer {
+  font-size: .8rem;
+  margin-top: 1rem;
+  color: var(--color1-disabled);
+}
+#footer .note {
+  font-size: .6rem;
+}
+#footer .note a {
+  text-decoration: underline;
+}
+
+.popup-wrapper {
+  display: flex;
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+
+  background-color: rgba(0, 0, 0, .7);
+
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  transition: opacity .2s, visibility .2s;
+  opacity: 0;
+  visibility: hidden;
+}
+.popup-wrapper.shown {
+  opacity: 1;
+  visibility: visible;
+}
+.popup-wrapper .outside-msg {
+  color: var(--color4);
+  cursor: default;
+}
+.popup {
+  padding: 2rem;
+  margin: 0 1rem;
+  background-color: #DDD;
+  max-width: 40rem;
+  max-height: 95%;
+  width: calc(95% - 1rem);
+  overflow: auto;
+  text-align: left;
+  color: var(--color2);
+  border: .5rem solid var(--color3);
+}
+.popup h3 {
+  font-size: 2rem;
+  text-align: center;
+  line-height: 4rem;
+}
+.popup h4 {
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 2rem;
+}
+.popup h4:before, .popup h4:after {
+  content: " - ";
+}
+.popup ul {
+  list-style-type: disc;
+  margin: 1rem 1rem 1rem 2rem;
+  line-height: 1.5rem;
+}
+.popup ul li {
+  margin: .25rem 0;
+}
+.popup p {
+  text-indent: 1rem;
+  margin: .5rem 0;
+  line-height: 1.5rem;
+}
+.popup p.center {
+  text-align: center;
+}
+.popup a {
+  text-decoration: underline;
+  color: var(--color3);
+}
+.popup figure.thumb {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  margin: 0 auto;
+}
+.popup table {
+  margin: .5rem;
+}
+.popup table td {
+  padding: 0 .5rem;
+}
+.popup figure.thumb img, .popup figure.thumb iframe {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.slideshow {
+  position: relative;
+}
+.slideshow > ul.buttons {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+.slideshow > ul.buttons li {
+  width: .8rem;
+  height: .8rem;
+  background-color: var(--color1);
+
+  opacity: .5;
+  transition: opacity .5s;
+  cursor: pointer;
+
+  border-radius: 50%;
+  margin: .5rem;
+}
+.slideshow > ul.buttons li.shown, .slideshow > ul.buttons li:hover {
+  opacity: .8;
+}
+.slideshow > :not(.shown) {
+  display: none;
+}
+
+@media (max-width: 45rem) {
+  html {
+    font-size: 14pt;
+  }
+  .hide-on-phone {
+    display: none;
+  }
+  #background .text {
+    font-size: 1.2rem;
+  }
+  #header {
+    margin: 16vh 0;
+  }
+  #header h1 {
+    font-size: 4rem;
+  }
+  #header .role {
+    letter-spacing: 1rem;
+  }
+  #works img.thumb {
+    width: 90%;
+  }
+  .popup {
+    padding: .5rem;
+    margin: .5rem;
+  }
+}
+  </style>
+  <script>
+"use strict";
+
+const lazyLoad = (e) => {
+  e.querySelectorAll("iframe.lazy, img.lazy").forEach((e) => {
+    e.classList.remove("lazy");
+    e.src = e.dataset.src;
+  });
+};
+
+const initPopup = () => {
+  const reload = () => {
+    document.querySelectorAll(".popup-wrapper.shown").forEach(p => {
+      p.classList.remove("shown");
+    });
+
+    if (location.hash === "") return;
+
+    const targets = document.getElementsByName(location.hash.substring(1));
+    if (targets.length === 0) {
+      location.hash = "";
+      return;
+    }
+
+    const target = targets[0];
+    if (target.classList.contains("popup-wrapper")) {
+      target.classList.add("shown");
+      lazyLoad(target);
+    }
+  };
+
+  document.querySelectorAll(".popup-wrapper").forEach(p => {
+    p.addEventListener("click", e2 => {
+      p.querySelectorAll("iframe.youtube").forEach(yt => {
+        yt.contentWindow.postMessage(JSON.stringify({
+          event: "command",
+          func: "pauseVideo",
+          args: "",
+        }), "*");
+      });
+      history.pushState({}, "", "#");
+      reload();
+    });
+    let text = document.createElement("div");
+    text.innerText = "CLOSE";
+    text.classList.add("outside-msg");
+    p.appendChild(text);
+  });
+  document.querySelectorAll(".popup-wrapper .popup").forEach(p => {
+    p.addEventListener("click", e2 => e2.stopPropagation());
+  });
+  document.querySelectorAll("a").forEach(p => {
+    if (p.href.slice(0, 1) !== "#") return;
+    p.addEventListener("click", e2 => {
+      e2.preventDefault()
+      history.pushState({}, "", p.href);
+      reload();
+    });
+  });
+  window.addEventListener("hashchange", reload);
+  reload();
+};
+
+const initSlideshow = () => {
+  document.querySelectorAll(".slideshow").forEach(s => {
+    let items = Array.from(s.children);
+
+    let buttons = document.createElement("ul");
+    buttons.classList.add("buttons");
+    s.appendChild(buttons);
+
+    let timeout = null;
+    let switch_to = (i) => {
+      if (timeout !== null) clearTimeout(timeout);
+      i %= items.length;
+
+      let old = s.querySelector(":scope > .shown");
+      if (old !== null) old.classList.remove("shown");
+
+      old = buttons.querySelector(":scope > .shown");
+      if (old !== null) old.classList.remove("shown");
+
+      items[i].classList.add("shown");
+      buttons.children[i].classList.add("shown");
+
+      timeout = setTimeout(() => switch_to(i+1), 5000);
+    };
+    items.forEach((c, i) => {
+      let button = document.createElement("li");
+      buttons.appendChild(button);
+      button.addEventListener("click", () => { switch_to(i); });
+    });
+    switch_to(0);
+  });
+};
+
+const initGraphics = () => {
+  let circles = document.querySelector("#background svg.circles");
+  for (let x = 0; x < 15; ++x) {
+    for (let y = 0; y < 10; ++y) {
+      let c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttributeNS(null, "cx", x*10+5+"");
+      c.setAttributeNS(null, "cy", y*10+5+"");
+      c.setAttributeNS(null, "r", "2");
+      circles.appendChild(c);
+    }
+  }
+
+  let sinwave = document.querySelector("#background svg.sinwaves");
+  {
+    let paths = sinwave.querySelectorAll("path");
+
+    let t = 0;
+    window.setInterval(() => {
+      paths.forEach((p, i) => {
+        let verts = "M ";
+        for (let x = 0; x < 100; ++x) {
+          verts += x*10+","+(Math.sin(x/4.5/Math.PI+t*.005*(i*(1.08-i*.1)+1)+i)*40+50)+" ";
+        }
+        p.setAttributeNS(null, "d", verts);
+      });
+      ++t;
+    }, 50);
+  }
+
+  let squares = document.querySelector("#background svg.squares");
+  for (let i = 0; i < 40; ++i) {
+    let s = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    s.setAttributeNS(null, "href", "#svg-background-square");
+    s.setAttributeNS(null, "transform", "rotate("+i/40*360+")");
+    squares.appendChild(s);
+  }
+};
+
+window.addEventListener("DOMContentLoaded", e => {
+  initPopup();
+  initSlideshow();
+  initGraphics();
+});
+  </script>
+</head>
+<body>
+
+<div id="background">
+<svg class="circles hide-on-phone"
+    width="60vh" height="40vh"
+    viewBox="0 0 150 100"
+    preserveAspectRatio="none"
+    style="left: 0; bottom: 10%; stroke: none; opacity: .5">
+</svg>
+<svg class="sinwaves"
+    width="max(100vw, 150mm)" height="min(10rem, 40mm)"
+    viewBox="0 0 1000 100"
+    preserveAspectRatio="none"
+    style="left: 0; top: calc(50vh - 5rem); fill: none">
+  <path></path>
+  <path></path>
+  <path></path>
+  <path></path>
+</svg>
+<svg class="triangles"
+    width="60vh" height="60vh"
+    viewBox="0 0 1000 1000"
+    preserveAspectRatio="none"
+    style="max-width: 70vw; max-height: 70vw; right: -10%; top: 10%; stroke: none">
+  <defs>
+    <path id="svg-background-triangle" d="M 500,500 0,0 1000,0 Z"></path>
+  </defs>
+  <use href="#svg-background-triangle" opacity=".5"></use>
+  <use href="#svg-background-triangle" opacity=".4" y="100"></use>
+  <use href="#svg-background-triangle" opacity=".3" y="200"></use>
+  <use href="#svg-background-triangle" opacity=".2" y="300"></use>
+  <use href="#svg-background-triangle" opacity=".2" y="400"></use>
+  <use href="#svg-background-triangle" opacity=".1" y="500"></use>
+</svg>
+<svg class="squares"
+    width="100vh" height="100vh"
+    viewBox="-600 -600 1200 1200"
+    preserveAspectRatio="none"
+    style="min-width: 40rem; min-height: 40rem; left: 50vw; top: 50vh; transform: translateX(-50%) translateY(-50%); fill: none; opacity: .6">
+  <defs>
+    <rect id="svg-background-square" width="300" height="300" x="100" y="100"></rect>
+  </defs>
+</svg>
+<svg class="lines hide-on-phone"
+    width="80vw" height="30vw"
+    viewBox="0 0 200 200"
+    preserveAspectRatio="none"
+    style="left: 0; top: 0; stroke: none">
+  <defs>
+    <path id="svg-background-line" d="M 0,0 18,60 16,60 28,100, 38,100 26,60 28,60 10,0 Z"></path>
+  </defs>
+  <use href="#svg-background-line" x="0" ></use>
+  <use href="#svg-background-line" x="30"></use>
+  <use href="#svg-background-line" x="60"></use>
+  <use href="#svg-background-line" x="90"></use>
+</svg>
+<div class="text hide-on-phone"
+style="position: absolute; right: 0; top: 40vh; color: var(--color3); opacity: .6">
+色蝣しき切み翳しをり
+灰成憬終葉な揺際一
+の今た言で唯出の
+憧蜉末色揺吐せ
+蝣今唯れ終吐
+揺翳色言翳
+末し色せ
+終灰な
+贖罪
+窕
+</div>
+
+</div>
+
+<div id="foreground">
+
+<div id="header">
+<h1>falsycat</h1>
+<div class="role">PROGRAMMER</div>
+
+<div class="icons">
+<ul>
+  <li><a href="https://github.com/falsycat" target="_blank"><img class="icon" src="./img/icon/github.svg"></a></li>
+  <li><a href="https://twitter.com/falsycat" target="_blank"><img class="icon" src="./img/icon/twitter.svg"></a></li>
+  <li><a href="https://note.falsy.cat/" target="_blank"><img class="icon" src="./img/icon/note.svg"></a></li>
+</ul>
+</div>
+</div>
+
+<div id="works">
+<h2>WORKS</h2>
+<ul>
+  <li>
+    <div><a href="#HTML-SQUASH"><img class="thumb" src="./img/thumb/html-squash.webp"></a></div>
+    <div name="HTML-SQUASH" class="popup-wrapper"><div class="popup">
+      <h3>HTML SQUASH</h3>
+      <figure class="thumb"><img class="lazy" data-src="./img/thumb/html-squash-preview.webp"></figure>
+      <ul>
+        <li>Squashes your HTML into a single file by resolving and embedding all external scripts and styles.</li>
+        <li><a href="https://html-squash.netlify.app/" target="_blank">HTML SQUASH</a></li>
+        <li><a href="https://github.com/falsycat/html-squash" target="_blank">falsycat/html-squash - GitHub</a></li>
+      </ul>
+    </div></div>
+  </li>
+  <li>
+    <div><a href="#rapidwolf"><img class="thumb" src="./img/thumb/rapidwolf.webp"></a></div>
+    <div name="rapidwolf" class="popup-wrapper"><div class="popup">
+      <h3>rapidwolf</h3>
+      <figure class="thumb"><img class="lazy" data-src="./img/thumb/rapidwolf-preview.webp"></figure>
+      <ul>
+        <li>A web tool which randomly displays you information retrieved from various sources.</li>
+        <li><a href="https://rapidwolf.netlify.app/" target="_blank">rapidwolf</a></li>
+        <li><a href="https://github.com/falsycat/rapidwolf" target="_blank">falsycat/rapidwolf - GitHub</a></li>
+      </ul>
+    </div></div>
+  </li>
+  <li>
+    <div><a href="#biner"><img class="thumb" src="./img/thumb/biner.webp"></a></div>
+    <div name="biner" class="popup-wrapper"><div class="popup">
+      <h3>biner</h3>
+      <figure class="thumb"><img class="lazy" data-src="./img/thumb/biner.webp"></figure>
+      <ul>
+        <li>IDL for binary format</li>
+        <li><a href="https://github.com/falsycat/biner" target="_blank">falsycat/biner - GitHub</a></li>
+      </ul>
+    </div></div>
+  </li>
+  <li>
+    <div><a href="#MV-Protodisco"><img class="thumb" src="./img/thumb/mv-protodisco.webp"></a></div>
+    <div name="MV-Protodisco" class="popup-wrapper"><div class="popup">
+      <h3>Protodisco MV</h3>
+      <figure class="thumb"><iframe class="youtube lazy" data-src="https://www.youtube.com/embed/ETHF5SLi1yw?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></figure>
+      <ul>
+        <li>borrowed music: <a href="https://youtu.be/rkkZYzXsxPA" target="_blank">Protodisco - flower / nulut (YouTube)</a></li>
+        <li>independent work</li>
+        <li><a href="https://drive.google.com/file/d/1QP2rHSZ6RF7QKgw9p-dQQGrde0h_mI-5/view?usp=sharing" target="_blank">PF download</a></li>
+      </ul>
+    </div></div>
+  </li>
+  <li>
+    <div><a href="#LEFTONE"><img class="thumb" src="./img/thumb/leftone.webp"></a></div>
+    <div name="LEFTONE" class="popup-wrapper"><div class="popup">
+      <h3>LEFTONE</h3>
+      <figure class="thumb slideshow">
+        <img class="lazy" data-src="./img/thumb/leftone-1.webp">
+        <img class="lazy" data-src="./img/thumb/leftone-2.webp">
+        <img class="lazy" data-src="./img/thumb/leftone-3.webp">
+        <img class="lazy" data-src="./img/thumb/leftone-4.webp">
+      </figure>
+      <ul>
+        <li>2D action game featuring ray marching in backgrounds</li>
+        <li>developed by C11+GLSL</li>
+        <li>got a prize on <a href="https://u22procon.com" target="_blank">2020 41st U22 Programming Contest</a></li>
+        <li><a href="https://github.com/falsycat/LEFTONE" target="_blank">falsycat/LEFTONE - GitHub</a></li>
+      </ul>
+    </div></div>
+  </li>
+</ul>
+</div>
+
+<div id="footer">
+<div>Copyright 2021 falsycat &lt;&#109;&#101;&commat;&#102;&#97;&#108;&#115;&#121;&period;&#99;&#97;&#116;&gt;</div>
+<div class="note">.CAT is a top level domain of <a href="https://domini.cat" target="_blank">Catalunya</a>.</div>
+</div>
+
+</div>
+
+<div id="frame">
+<svg class="side-triangles hide-on-phone"
+    width="100%" height="100%"
+    viewBox="0 0 100 100"
+    preserveAspectRatio="none"
+    style="fill: #000">
+  <path d="M 0,0 10,0 0,100 Z"></path>
+  <path d="M 100,0 90,100 100,100 Z"></path>
+</svg>
+</div>
+</body>
+</html>
+
