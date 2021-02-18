@@ -8,14 +8,14 @@
 
   <meta name="author" content="falsycat">
   <meta name="description" content="falsycat's portfolio">
-  <link rel="icon" href="./img/icon/falsycat.webp">
+  <link rel="icon" href="/img/icon/falsycat.webp">
 
   <meta name="twitter:site" content="@falsycat">
   <meta name="twitter:card" content="summary">
   <meta property="og:url" content="https://falsy.cat/">
   <meta property="og:title" content="falsycat">
   <meta property="og:description" content="falsycat's portfolio">
-  <meta property="og:image" content="./img/icon/falsycat.webp">
+  <meta property="og:image" content="/img/icon/falsycat.webp">
 
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Ubuntu&family=Noto+Serif+JP&display=block" rel="stylesheet">
@@ -80,7 +80,7 @@ h1, h2, h3, h4 {
   position: relative;
   z-index: 0;
 
-  background-image: url("./img/tex/clean-gray-paper.webp");
+  background-image: url("/img/tex/clean-gray-paper.webp");
   background-size: 512px 512px;
 }
 
@@ -351,16 +351,38 @@ const lazyLoad = (e) => {
 };
 
 const initPopup = () => {
-  const reload = () => {
+  const reload = (path) => {
+    /* hide all shown popup */
     document.querySelectorAll(".popup-wrapper.shown").forEach(p => {
       p.classList.remove("shown");
     });
 
-    if (location.hash === "") return;
+    /* beatiful path */
+    if (path === "/index.html") {
+      path = "/";
+    }
+    if (path.charAt(0) !== "/") {
+      path = "/"+path;
+    }
+    if (path.slice(-1) !== "/") {
+      path += "/";
+    }
+    try {
+      history.replaceState({}, "", path);
+    } catch (e) {
+      path = "";
+      history.replaceState({}, "", "/");
+    }
 
-    const targets = document.getElementsByName(location.hash.substring(1));
+    path = path.slice(1, -1);
+    if (path === "") {
+      return;
+    }
+
+    /* showing popup */
+    const targets = document.getElementsByName(path);
     if (targets.length === 0) {
-      location.hash = "";
+      reload("/");
       return;
     }
 
@@ -380,8 +402,7 @@ const initPopup = () => {
           args: "",
         }), "*");
       });
-      history.pushState({}, "", "#");
-      reload();
+      reload("/");
     });
     let text = document.createElement("div");
     text.innerText = "CLOSE";
@@ -391,16 +412,13 @@ const initPopup = () => {
   document.querySelectorAll(".popup-wrapper .popup").forEach(p => {
     p.addEventListener("click", e2 => e2.stopPropagation());
   });
-  document.querySelectorAll("a").forEach(p => {
-    if (p.href.slice(0, 1) !== "#") return;
-    p.addEventListener("click", e2 => {
-      e2.preventDefault()
-      history.pushState({}, "", p.href);
-      reload();
+  document.querySelectorAll("a[href^='/']").forEach(p => {
+    p.addEventListener("click", ev => {
+      ev.preventDefault()
+      reload(p.getAttribute("href"));
     });
   });
-  window.addEventListener("hashchange", reload);
-  reload();
+  reload(location.pathname);
 };
 
 const initSlideshow = () => {
@@ -561,9 +579,9 @@ style="position: absolute; right: 0; top: 40vh; color: var(--color3); opacity: .
 
 <div class="icons">
 <ul>
-  <li><a href="https://github.com/falsycat" target="_blank"><img class="icon" src="./img/icon/github.svg"></a></li>
-  <li><a href="https://twitter.com/falsycat" target="_blank"><img class="icon" src="./img/icon/twitter.svg"></a></li>
-  <li><a href="https://note.falsy.cat/" target="_blank"><img class="icon" src="./img/icon/note.svg"></a></li>
+  <li><a href="https://github.com/falsycat" target="_blank"><img class="icon" src="/img/icon/github.svg"></a></li>
+  <li><a href="https://twitter.com/falsycat" target="_blank"><img class="icon" src="/img/icon/twitter.svg"></a></li>
+  <li><a href="https://note.falsy.cat/" target="_blank"><img class="icon" src="/img/icon/note.svg"></a></li>
 </ul>
 </div>
 </div>
@@ -572,10 +590,10 @@ style="position: absolute; right: 0; top: 40vh; color: var(--color3); opacity: .
 <h2>WORKS</h2>
 <ul>
   <li>
-    <div><a href="#HTML-SQUASH"><img class="thumb" src="./img/thumb/html-squash.webp"></a></div>
-    <div name="HTML-SQUASH" class="popup-wrapper"><div class="popup">
+    <div><a href="/web/html-squash"><img class="thumb" src="/img/thumb/html-squash.webp"></a></div>
+    <div name="web/html-squash" class="popup-wrapper"><div class="popup">
       <h3>HTML SQUASH</h3>
-      <figure class="thumb"><img class="lazy" data-src="./img/thumb/html-squash-preview.webp"></figure>
+      <figure class="thumb"><img class="lazy" data-src="/img/thumb/html-squash-preview.webp"></figure>
       <ul>
         <li>Squashes your HTML into a single file by resolving and embedding all external scripts and styles.</li>
         <li><a href="https://html-squash.netlify.app/" target="_blank">HTML SQUASH</a></li>
@@ -584,10 +602,10 @@ style="position: absolute; right: 0; top: 40vh; color: var(--color3); opacity: .
     </div></div>
   </li>
   <li>
-    <div><a href="#rapidwolf"><img class="thumb" src="./img/thumb/rapidwolf.webp"></a></div>
-    <div name="rapidwolf" class="popup-wrapper"><div class="popup">
+    <div><a href="/web/rapidwolf"><img class="thumb" src="/img/thumb/rapidwolf.webp"></a></div>
+    <div name="web/rapidwolf" class="popup-wrapper"><div class="popup">
       <h3>rapidwolf</h3>
-      <figure class="thumb"><img class="lazy" data-src="./img/thumb/rapidwolf-preview.webp"></figure>
+      <figure class="thumb"><img class="lazy" data-src="/img/thumb/rapidwolf-preview.webp"></figure>
       <ul>
         <li>A web tool which randomly displays you information retrieved from various sources.</li>
         <li><a href="https://rapidwolf.netlify.app/" target="_blank">rapidwolf</a></li>
@@ -596,10 +614,10 @@ style="position: absolute; right: 0; top: 40vh; color: var(--color3); opacity: .
     </div></div>
   </li>
   <li>
-    <div><a href="#biner"><img class="thumb" src="./img/thumb/biner.webp"></a></div>
-    <div name="biner" class="popup-wrapper"><div class="popup">
+    <div><a href="/dev/biner"><img class="thumb" src="/img/thumb/biner.webp"></a></div>
+    <div name="dev/biner" class="popup-wrapper"><div class="popup">
       <h3>biner</h3>
-      <figure class="thumb"><img class="lazy" data-src="./img/thumb/biner.webp"></figure>
+      <figure class="thumb"><img class="lazy" data-src="/img/thumb/biner.webp"></figure>
       <ul>
         <li>IDL for binary format</li>
         <li><a href="https://github.com/falsycat/biner" target="_blank">falsycat/biner - GitHub</a></li>
@@ -607,8 +625,8 @@ style="position: absolute; right: 0; top: 40vh; color: var(--color3); opacity: .
     </div></div>
   </li>
   <li>
-    <div><a href="#MV-Protodisco"><img class="thumb" src="./img/thumb/mv-protodisco.webp"></a></div>
-    <div name="MV-Protodisco" class="popup-wrapper"><div class="popup">
+    <div><a href="/mv/protodisco"><img class="thumb" src="/img/thumb/mv-protodisco.webp"></a></div>
+    <div name="mv/protodisco" class="popup-wrapper"><div class="popup">
       <h3>Protodisco MV</h3>
       <figure class="thumb"><iframe class="youtube lazy" data-src="https://www.youtube.com/embed/ETHF5SLi1yw?enablejsapi=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></figure>
       <ul>
@@ -619,14 +637,14 @@ style="position: absolute; right: 0; top: 40vh; color: var(--color3); opacity: .
     </div></div>
   </li>
   <li>
-    <div><a href="#LEFTONE"><img class="thumb" src="./img/thumb/leftone.webp"></a></div>
-    <div name="LEFTONE" class="popup-wrapper"><div class="popup">
+    <div><a href="/app/leftone"><img class="thumb" src="/img/thumb/leftone.webp"></a></div>
+    <div name="app/leftone" class="popup-wrapper"><div class="popup">
       <h3>LEFTONE</h3>
       <figure class="thumb slideshow">
-        <img class="lazy" data-src="./img/thumb/leftone-1.webp">
-        <img class="lazy" data-src="./img/thumb/leftone-2.webp">
-        <img class="lazy" data-src="./img/thumb/leftone-3.webp">
-        <img class="lazy" data-src="./img/thumb/leftone-4.webp">
+        <img class="lazy" data-src="/img/thumb/leftone-1.webp">
+        <img class="lazy" data-src="/img/thumb/leftone-2.webp">
+        <img class="lazy" data-src="/img/thumb/leftone-3.webp">
+        <img class="lazy" data-src="/img/thumb/leftone-4.webp">
       </figure>
       <ul>
         <li>2D action game featuring ray marching in backgrounds</li>
